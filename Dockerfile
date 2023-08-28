@@ -1,4 +1,9 @@
-FROM openjdk:8
+FROM gradle:6.9.0-jdk11 AS build
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle build --no-daemon
+
+FROM openjdk:11-jre-slim
 EXPOSE 8080
-ADD target/spring-boot.jar spring-boot-docker.jar
-ENTRYPOINT ["java","-jar","/spring-boot-docker.jar"]
+COPY --from=build /home/gradle/src/build/libs/*.jar app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
