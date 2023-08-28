@@ -1,0 +1,21 @@
+---
+trigger:
+  - main
+pool:
+  vmImage: ubuntu-latest
+steps:
+  - script: echo Hello, world!
+    displayName: Run a one-line script
+  - script: echo Adding ACR credentials...
+    displayName: Configure ACR credentials
+    env:
+      AZURE_SERVICE_CONNECTION_NAME: spb-acr-service
+  - script: |
+      az acr login --name spbacr
+      docker build -t spb-acr-service.azurecr.io/tomee:$(Build.BuildId) .
+      docker push spbacr.azurecr.io/tomee:$(Build.BuildId)
+    displayName: Build and push Docker image to ACR
+    env:
+      AZURE_SERVICE_CONNECTION_NAME: spb-acr-service
+      your-acr-name: spbacr
+      image-name: tomee
