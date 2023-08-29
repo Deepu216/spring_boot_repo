@@ -1,5 +1,3 @@
-[13:44] Dinesh @ Zura Labs
-
 # Use a base image with Java and Maven installed
 
 FROM maven:3.8.4-openjdk-11-slim AS build
