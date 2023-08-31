@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-springboot-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-spb-app
+  template:
+    metadata:
+      labels:
+        app: my-spb-app
+    spec:
+      containers:
+      - name:  spring_boot_repo
+        image: spbacr.azurecr.io/Deepu216/spring_boot_repo:#{Build.BuildId}#
+        ports:
+        - containerPort: 5000
+# service type loadbalancer       
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-spb-app-svc
+spec:
+  selector:
+    app: my-spb-app
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+  type: LoadBalancer
